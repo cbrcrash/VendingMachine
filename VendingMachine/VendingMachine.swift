@@ -43,8 +43,9 @@ protocol VendingMachine {
     var amountDepositied: Double  { get set }
     
     init(inventory: [VendingSelection: VendingItem])
-    func vend(_ quantity: Int, _ selection: VendingSelection) throws
+    func vend(selection: VendingSelection, quantity: Int) throws
     func deposit(_ amount: Double)
+    func item(forSelection selection: VendingSelection) -> VendingItem?
 }
 
 struct Item: VendingItem {
@@ -107,7 +108,7 @@ class FoodVendingMachine: VendingMachine {
         self.inventory = inventory
     }
     
-    func vend(_ quantity: Int, _ selection: VendingSelection) throws {
+    func vend(selection: VendingSelection, quantity: Int) throws {
         guard var item = inventory[selection] else {
             throw VendingMachineError.invalidSelection
         }
@@ -131,5 +132,10 @@ class FoodVendingMachine: VendingMachine {
     }
     
     func deposit(_ amount: Double) {
+        amountDepositied += amount
+    }
+    
+    func item(forSelection selection: VendingSelection) -> VendingItem? {
+        return inventory[selection]
     }
 }
